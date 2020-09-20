@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -38,7 +39,9 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -585,6 +588,12 @@ public class Camera2VideoFragment extends Fragment
         if (mNextVideoAbsolutePath == null || mNextVideoAbsolutePath.isEmpty()) {
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
+        Uri uri = Uri.parse(mNextVideoAbsolutePath);
+        SharedPreferences data = activity.getSharedPreferences("DataSave", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putString("UriSave", uri.toString());
+        editor.apply();
+        Log.e("TAG","保存されファイル名は" + mNextVideoAbsolutePath);
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
         mMediaRecorder.setVideoEncodingBitRate(10000000);
         mMediaRecorder.setVideoFrameRate(30);
