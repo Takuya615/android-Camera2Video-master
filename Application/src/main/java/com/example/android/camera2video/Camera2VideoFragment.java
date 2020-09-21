@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -107,6 +108,7 @@ public class Camera2VideoFragment extends Fragment
      * Button to record video
      */
     private Button mButtonVideo;
+    private Button mButtonshowGalary;
 
     /**
      * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
@@ -287,6 +289,8 @@ public class Camera2VideoFragment extends Fragment
         mButtonVideo = (Button) view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
+        mButtonshowGalary = (Button) view.findViewById(R.id.showGalary);
+        mButtonshowGalary.setOnClickListener(this);
     }
 
     @Override
@@ -328,7 +332,13 @@ public class Camera2VideoFragment extends Fragment
                 }
                 break;
             }
+            case R.id.showGalary: {
+                Intent intent = new Intent(getActivity(), ShowGalaryActivity.class);
+                startActivity(intent);
+                break;
+            }
         }
+
     }
 
     /**
@@ -588,12 +598,14 @@ public class Camera2VideoFragment extends Fragment
         if (mNextVideoAbsolutePath == null || mNextVideoAbsolutePath.isEmpty()) {
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
+
         Uri uri = Uri.parse(mNextVideoAbsolutePath);
         SharedPreferences data = activity.getSharedPreferences("DataSave", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
         editor.putString("UriSave", uri.toString());
         editor.apply();
         Log.e("TAG","保存されファイル名は" + mNextVideoAbsolutePath);
+
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
         mMediaRecorder.setVideoEncodingBitRate(10000000);
         mMediaRecorder.setVideoFrameRate(30);
